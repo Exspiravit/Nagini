@@ -16,10 +16,10 @@ bot = telebot.TeleBot(token)
 def listener(messages): # Con esto, estamos definiendo una función llamada 'listener', que recibe como parámetro un dato llamado 'messages'.
     for m in messages: # Por cada dato 'm' en el dato 'messages'
         cid = m.chat.id # El Cid es el identificador del chat los negativos son grupos y positivos los usuarios
-        if cid > 0:
-            mensaje = str(m.chat.first_name) + " [" + str(cid) + "]: " + m.text # Si 'cid' es positivo, usaremos 'm.chat.first_name' para el nombre.
-        else:
-            mensaje = str(m.from_user.first_name) + "[" + str(cid) + "]: " + m.text # Si 'cid' es negativo, usaremos 'm.from_user.first_name' para el nombre.
+        if cid > 0 and m != None:
+            mensaje = str(m.chat.first_name) + " [" + str(cid) + "]: " + str(m.text) # Si 'cid' es positivo, usaremos 'm.chat.first_name' para el nombre.
+        elif cid < 0 and m != None:
+            mensaje = str(m.from_user.first_name) + "[" + str(cid) + "]: " + str(m.text) # Si 'cid' es negativo, usaremos 'm.from_user.first_name' para el nombre.
         f = open( 'log.txt', 'a') # Abrimos nuestro fichero log en modo 'Añadir'.
         f.write(mensaje + "\n") # Escribimos la linea de log en el fichero.
         f.close() # Cerramos el fichero para que se guarde.
@@ -27,14 +27,25 @@ def listener(messages): # Con esto, estamos definiendo una función llamada 'lis
 
 
 #Mensaje de bienvenida para nuevos usuarios en un chat grupal
-@bot.message_handler(content_type=["new_chat_members"])
-def bienvenida(m):
-    bot.send_message(m.chat.id,text.bienvenida)
+@bot.message_handler(func=lambda m: True, content_types=['new_chat_members'])
+# Y ejecutamos la función "welcome" el respuesta.
+def welcome(message):
+        new_member = message.new_chat_member.first_name
+        msg = "Bienvenido/a al grupo, " + new_member
+        chat_id = message.chat.id
+        bot.send_message(chat_id, msg)
+
 
 #Mensaje de despedida para usuarios en un chat grupal
-@bot.message_handler(content_type=["left_chat_member"])
-def despedida(m):
-    bot.send_message(m.chat.id,text.adios)
+@bot.message_handler(func=lambda m: True, content_type=["left_chat_member"])
+def despedida(message):
+        left_member = message.left_chat_member.first_name
+        print(message.left_chat_member)
+        msg = "Hasta pronto, " + left_member
+        chat_id = message.chat.id
+        bot.send_message(chat_id, msg)
+
+
 
 
 #Mensaje de ayuda
@@ -58,16 +69,16 @@ def command_info(m): # Definimos una función que resuleva lo que necesitemos.
 def command_rules(m):
     cid = m.chat.id
     rules = []
-    for a in range(5):
-        if a > 0:
-            r = open('./img/rules/'+str(a)+'.jpeg','rb')
-            rules.append(r)
-
+    #for a in range(5):
+    #    if a > 0:
+    #        r = open('./img/rules/'+str(a)+'.jpeg','rb')
+    #        rules.append(r)
+#
     bot.send_chat_action(cid,'typing')
     time.sleep(1)
-    bot.send_message(cid, text.rules)
-    for a in range(4):
-        bot.send_photo(cid,rules[a])
+    bot.send_message(cid, 'Reglas en mantenimiento.')
+    #for a in range(4):
+    #    bot.send_photo(cid,rules[a])
 
 @bot.message_handler(commands=['hola'])
 def command_hola(m):
