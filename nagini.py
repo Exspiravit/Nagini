@@ -17,13 +17,13 @@ def listener(messages): # Con esto, estamos definiendo una función llamada 'lis
     for m in messages: # Por cada dato 'm' en el dato 'messages'
         cid = m.chat.id # El Cid es el identificador del chat los negativos son grupos y positivos los usuarios
         if cid > 0 and m != None:
-            mensaje = str(m.chat.first_name) + " [" + str(cid) + "]: " + str(m.text) # Si 'cid' es positivo, usaremos 'm.chat.first_name' para el nombre.
+            mensaje = time.strftime("%c") + " " + str(m.chat.first_name) + " [" + str(cid) + "]: " + str(m.text) # Si 'cid' es positivo, usaremos 'm.chat.first_name' para el nombre.
         elif cid < 0 and m != None:
-            mensaje = str(m.from_user.first_name) + "[" + str(cid) + "]: " + str(m.text) # Si 'cid' es negativo, usaremos 'm.from_user.first_name' para el nombre.
+            mensaje = time.strftime("%c") + " " +  str(m.from_user.first_name) + "[" + str(cid) + "]: " + str(m.text) # Si 'cid' es negativo, usaremos 'm.from_user.first_name' para el nombre.
         f = open( 'log.txt', 'a') # Abrimos nuestro fichero log en modo 'Añadir'.
         f.write(mensaje + "\n") # Escribimos la linea de log en el fichero.
         f.close() # Cerramos el fichero para que se guarde.
-        print(mensaje) # Imprimimos el mensaje en la terminal, que nunca viene mal :) 
+        #print(mensaje) # Imprimimos el mensaje en la terminal, que nunca viene mal :) 
 
 
 #Mensaje de bienvenida para nuevos usuarios en un chat grupal
